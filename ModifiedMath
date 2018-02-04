@@ -1,0 +1,62 @@
+pragma solidity ^0.4.18;
+
+contract ModifiedMathContract {
+    
+    int256 state = 0;
+    
+    function getState() returns (int256){
+        return state;
+    }
+    
+    function resetStateToZero(){
+        state = 0;
+    }
+  
+    function add(int256 num2) public {
+        state += num2;
+    }
+    
+    function subtract(int256 num2) public {
+        state -= num2;
+    }
+    
+    function multiply(int256 num2) public {
+        state *= num2;
+    }
+    
+    function divide(int256 num2) public {
+        if(num2 != 0){
+            state /= num2;
+        }
+        else{
+            throw;
+        }
+    }
+   
+    function power (uint256 num2) public {
+        
+        if (state < 0){
+            if(num2 % 2==0 ){
+                state  = int256(uint256(0-state) ** num2);
+            }
+            else{
+                state =  -(int256(uint256(0-state) ** num2));
+            }
+        }
+        else{
+            state = int256(uint256(state)**num2);
+        }
+    }
+    
+    function modularDivision(int256 num2) public {
+        if(num2 != 0){
+            state = state % num2;
+        }
+        else{
+            throw;
+        }
+    }
+    
+    
+    
+}
