@@ -1,0 +1,52 @@
+pragma solidity ^0.4.18;
+
+contract MathContract {
+    
+    function add(int256 num1, int256 num2) public returns(int256) {
+        return num1 + num2;
+    }
+    
+    function subtract(int256 num1, int256 num2) public returns(int256) {
+        return num1 - num2;
+    }
+    
+    function multiply(int256 num1, int256 num2) public returns(int256) {
+        return num1 * num2;
+    }
+    
+    function divide(int256 num1, int256 num2) public returns(int256) {
+        if(num2 != 0){
+            return num1 / num2;
+        }
+        else{
+            throw;
+        }
+    }
+   
+    function power (int256 num1, uint256 num2) public returns(int256) {
+        int256 result;
+        if (num1 < 0){
+            if(num2 % 2==0 ){
+                result  = int256(uint256(0-num1) ** num2);
+            }
+            else{
+                result =  -(int256(uint256(0-num1) ** num2));
+            }
+        }
+        else{
+            result = int256(uint256(num1)**num2);
+        }
+        return result;
+    }
+    
+    function modularDivision(int256 num1, int256 num2) public returns(int256) {
+        if(num2 != 0){
+            return num1 % num2;
+        }
+        else{
+            throw;
+        }
+    }
+    
+    
+}
