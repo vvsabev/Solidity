@@ -1,0 +1,89 @@
+pragma solidity 0.4.19;
+
+contract BuyServiceHomework{
+    
+    address private owner;
+    uint private price;
+    uint private lastBoughtTime;
+    uint private lastWithdraw;
+    
+    function() public payable{
+        
+    }
+    
+    function BuyServiceHomework() public {
+         owner = msg.sender;
+         lastBoughtTime = 0;
+         lastWithdraw = 0;
+         price = 1 ether;
+    }
+    
+    function buyService() 
+                            public 
+                            payable 
+                            IsMoreOrEqualTo(msg.value, price) 
+                            TimeHasPassedSince(2 minutes, lastBoughtTime) 
+                            AddrHasSufficientBalance(msg.sender, price) {
+                                
+        uint256 balanceBeforeTransaction = this.balance;
+        lastBoughtTime = now;
+        ServiceBought(msg.sender);
+        
+        if(msg.value > price){
+            msg.sender.transfer(msg.value - price);
+            ChangeReturned(msg.sender, msg.value - price);
+        }
+        
+        assert(this.balance == balanceBeforeTransaction - (msg.value - price) );
+    }
+    
+    function withdrawMoney(uint amount) 
+                                    public 
+                                    payable 
+                                    OnlyOwner
+                                    IsLessOrEqualTo(amount, 5 ether)
+                                    TimeHasPassedSince(1 hours, lastWithdraw)
+                                    AddrHasSufficientBalance(this, amount){
+        uint ownerBalanceBeforeTransaction = owner.balance;
+        lastWithdraw = now;
+        owner.transfer(amount);
+        Withdrawal(owner, amount);
+        
+        assert(ownerBalanceBeforeTransaction + amount == owner.balance);
+    }
+    
+    function getBalance() public view OnlyOwner returns(uint){
+        return this.balance;
+    }
+    
+    
+    
+    event ServiceBought(address indexed buyer);
+    event ChangeReturned(address indexed toAddr, uint changeAmount);
+    event Withdrawal (address indexed addr, uint amount);
+    
+    modifier OnlyOwner{
+        require(msg.sender == owner);
+        _;
+    }
+    
+    modifier AddrHasSufficientBalance(address addr,uint amount){
+        require(addr.balance >= amount);
+        _;
+    }
+    
+    modifier IsMoreOrEqualTo(uint amount1, uint amount2){
+        require(amount1 >= amount2);
+        _;
+    }
+    
+    modifier IsLessOrEqualTo(uint amount1, uint amount2){
+        require(amount1 <= amount2);
+        _;
+    }
+    
+    modifier TimeHasPassedSince(uint timePassed, uint since){
+        require(now - since >= timePassed);
+        _;
+    }
+}
